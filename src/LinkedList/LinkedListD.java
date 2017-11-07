@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import node.node;
 
-public class LinkedListD<T> implements Iterator<T>{
+public class LinkedListD<T extends Comparable<T>> implements Iterator<T>{
 	private node<T> start = null, end = null,auxIt=null;
 	
 	public LinkedListD(){
@@ -253,6 +253,14 @@ public class LinkedListD<T> implements Iterator<T>{
 		}
 	}
 
+	public node<T> getStart(){
+		return this.start;
+	}
+	
+	public node<T> getEnd(){
+		return this.end;
+	}
+	
 	@Override
 	public boolean hasNext() {
 		return auxIt.getNext()!=null;
@@ -264,4 +272,84 @@ public class LinkedListD<T> implements Iterator<T>{
 		auxIt=auxIt.getNext();
 		return value;
 	}
+	
+	public boolean sonIguales(LinkedListD<T> lista,LinkedListD<T> listaComparar) {
+		if (!lista.isEmpty() && !listaComparar.isEmpty()) {
+			if (lista.size() == listaComparar.size()) {
+				return equals(lista.getStart(), listaComparar.getStart());
+			}else {
+				return false;
+			}
+		}else {
+			return false;
+		}
+	}
+	private boolean equals(node<T> sentinelList,node<T> sentinelListCompere) {
+		if (sentinelList.getNext() != null && sentinelListCompere.getNext() != null) {
+			if (sentinelList.getNext().getValue().equals(sentinelListCompere.getNext().getValue())) {
+				return equals(sentinelList.getNext(), sentinelListCompere.getNext());
+			}else {
+				return false;
+			}
+		}
+		return true;
+	}
+	public node<T> existeElemento(LinkedListD<T> lista,T value) {
+		if (!lista.isEmpty())
+			return serchRecElement(lista.getStart(),lista.getEnd(), value);
+		return null;
+	}
+	private node<T> serchRecElement(node<T> sentinelStart,node<T> sentinelEnd,T value) {
+			if(sentinelStart.getNext().getValue().equals(value)){
+				return sentinelStart.getNext();
+			}else if(sentinelEnd.getBack().getValue().equals(value)) {
+				return sentinelEnd.getBack();
+			}else if (sentinelStart.getNext().equals(sentinelEnd) && sentinelEnd.getBack().equals(sentinelStart)) {
+				return null;
+			}
+			return serchRecElement(sentinelStart.getNext(), sentinelEnd.getBack(), value);
+	}
+	
+	public int ocurrencia(LinkedListD<T> list,T value) {
+		if (!list.isEmpty()) {
+			return ocurrenciaRec(list.getStart(),value,0);
+		}
+		return -1;
+	}
+	private int ocurrenciaRec(node<T> sentinelStart,T value,int occ) {
+		if (sentinelStart.getNext()!=null) {
+			if (sentinelStart.getNext().getValue().equals(value)) {
+				occ++;
+				return ocurrenciaRec(sentinelStart.getNext(), value, occ);
+			}else {
+				return ocurrenciaRec(sentinelStart.getNext(), value, occ);
+			}
+		}
+		return occ;
+	}
+	private boolean isInteger(node<T> data) {
+		if (data.getValue() instanceof Integer) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	public int suma(LinkedListD<T> list) {
+		if (!list.isEmpty()) {
+			if (list.isInteger(list.getStart().getNext())) {
+				return sumRec(list.getStart(), 0);
+			}
+		}
+		return 0;
+	}
+	private int sumRec(node<T> data,int sum) {
+		if (data.getNext()!=null) {
+			sum+=(int)data.getNext().getValue();
+			return sumRec(data.getNext(), sum);
+		}
+		return sum;
+	}
+	
+	
+
 }
